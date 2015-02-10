@@ -35,8 +35,6 @@ class ArticleType1Factory:
 
     @property
     def title(self):
-        if self.title is not None:
-            return self.title
         m = re.search(r'<img src.*?\.gif\"><strong>(.*?)\n</strong>', self.__content, re.MULTILINE|re.DOTALL);
         if m is None:
             return None
@@ -45,8 +43,6 @@ class ArticleType1Factory:
 
     @property
     def year(self):
-        if self.year is not None:
-            return self.year
         m = re.search(r'<td width="30%">.*?([0-9]{4,4})-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}.*?</td>', self.__content, re.MULTILINE|re.DOTALL);
         if m is None:
             return 0
@@ -55,8 +51,6 @@ class ArticleType1Factory:
 
     @property
     def month(self):
-        if self.month is not None:
-            return self.month
         m = re.search(r'<td width="30%">.*?[0-9]{4,4}-([0-9]{1,2})-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}.*?</td>', self.__content, re.MULTILINE|re.DOTALL);
         if m is None:
             return 0
@@ -65,8 +59,6 @@ class ArticleType1Factory:
 
     @property
     def day(self):
-        if self.day is not None:
-            return self.day
         m = re.search(r'<td width="30%">.*?[0-9]{4,4}-[0-9]{1,2}-([0-9]{1,2}) [0-9]{1,2}:[0-9]{1,2}.*?</td>', self.__content, re.MULTILINE|re.DOTALL);
         if m is None:
             return 0
@@ -75,8 +67,6 @@ class ArticleType1Factory:
 
     @property
     def hour(self):
-        if self.hour is not None:
-            return self.hour
         m = re.search(r'<td width="30%">.*?[0-9]{4,4}-[0-9]{1,2}-[0-9]{1,2} ([0-9]{1,2}):[0-9]{1,2}.*?</td>', self.__content, re.MULTILINE|re.DOTALL);
         if m is None:
             return 0
@@ -85,8 +75,6 @@ class ArticleType1Factory:
 
     @property
     def minute(self):
-        if self.minute is not None:
-            return self.minute
         m = re.search(r'<td width="30%">.*?[0-9]{4,4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:([0-9]{1,2}).*?</td>', self.__content, re.MULTILINE|re.DOTALL);
         if m is None:
             return 0
@@ -99,15 +87,11 @@ class ArticleType1Factory:
 
     @property
     def categories(self):
-        if self.categories is not None:
-            return self.categories
         categories = []
         return cagetories
     
     @property
     def content(self):
-        if self.content is not None:
-            return self.content
         m = re.search(r'<td width=\"80%\" colsspan=10>.*?<font style=\'line-height:150%\'.*?>(.*?)</td', self.__content, re.MULTILINE|re.DOTALL);
         if m is None:
             return None
@@ -336,7 +320,7 @@ ET._escape_cdata = new_escape_cdata
 
 class ArticleMgr:
     def __init__ (self):
-        self.fileArticleDict = {}
+        self.test = ""
 
     def __CDATA__ (self, text):
         return '<![CDATA[' + unicode(text) + ']]>'
@@ -348,7 +332,6 @@ class ArticleMgr:
         for f in files:
             m = re.search('.*\.html', f)
             article = ArticleParse(get_content_from_file(fileDirectory + "/" + f))
-            self.fileArticleDict[f] = article
             Articles.append(article)
             i += 1
 
@@ -414,14 +397,7 @@ class ArticleMgr:
 
         i = 0
         for a in Articles:
-            print ("Processing `%s'..." % a.title)
-            if a.title is None or a.content is None:
-                for key, value in self.fileArticleDict.iteritems():
-                    if value is a:
-                        print ("Error, the file is `%s'" % key)
-                        break
-                print ("Error, dict not found")
-                break
+            print "Processing [%d] `%s'..." % (i, a.title)
 
             dt = DT.datetime(a.year, a.month, a.day, a.hour, a.minute, a.seconds, tzinfo=None)
             utcTime = dt - DT.timedelta(hours=8)
