@@ -23,6 +23,126 @@ LASTNAME = "Liu"
 #Local path for downloaded pictures.
 PIC_LOCAL_PATH = "./from_love_school/"
 
+class ArticleCommentFactory:
+    def __init__ (self, content):
+        self.__content = content
+        self.__type = ""
+
+    @property
+    def type(self):
+        self.__type = "Type1"
+        return self.__type
+
+    @property
+    def title(self):
+        m = re.search(r'<img src.*?\.gif\"><strong>(.*?)\n</strong>', self.__content, re.MULTILINE|re.DOTALL);
+        if m is None:
+            return None
+        else:
+            return m.groups()[0]
+
+    @property
+    def year(self):
+        m = re.search(r' ([0-9]{4,4})-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}', self.__content, re.MULTILINE|re.DOTALL);
+        if m is None:
+            m = re.search(r'>([0-9]{4,4})-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}', self.__content, re.MULTILINE|re.DOTALL);
+            if m is None:
+                return 0
+        return int(m.groups()[0])
+
+    @property
+    def month(self):
+        m = re.search(r' [0-9]{4,4}-([0-9]{1,2})-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}', self.__content, re.MULTILINE|re.DOTALL);
+        if m is None:
+            m = re.search(r'>[0-9]{4,4}-([0-9]{1,2})-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}', self.__content, re.MULTILINE|re.DOTALL);
+            if m is None:
+                return 0
+        return int(m.groups()[0])
+
+    @property
+    def day(self):
+        m = re.search(r' [0-9]{4,4}-[0-9]{1,2}-([0-9]{1,2}) [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}', self.__content, re.MULTILINE|re.DOTALL);
+        if m is None:
+            m = re.search(r'>[0-9]{4,4}-[0-9]{1,2}-([0-9]{1,2}) [0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}', self.__content, re.MULTILINE|re.DOTALL);
+            if m is None:
+                return 0
+        return int(m.groups()[0])
+
+    @property
+    def hour(self):
+        m = re.search(r' [0-9]{4,4}-[0-9]{1,2}-[0-9]{1,2} ([0-9]{1,2}):[0-9]{1,2}:[0-9]{1,2}', self.__content, re.MULTILINE|re.DOTALL);
+        if m is None:
+            m = re.search(r'>[0-9]{4,4}-[0-9]{1,2}-[0-9]{1,2} ([0-9]{1,2}):[0-9]{1,2}:[0-9]{1,2}', self.__content, re.MULTILINE|re.DOTALL);
+            if m is None:
+                return 0
+        return int(m.groups()[0])
+
+    @property
+    def minute(self):
+        m = re.search(r' [0-9]{4,4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:([0-9]{1,2}):[0-9]{1,2}', self.__content, re.MULTILINE|re.DOTALL);
+        if m is None:
+            m = re.search(r'>[0-9]{4,4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:([0-9]{1,2}):[0-9]{1,2}', self.__content, re.MULTILINE|re.DOTALL);
+            if m is None:
+                return 0
+        return int(m.groups()[0])
+
+    @property
+    def seconds(self):
+        m = re.search(r' [0-9]{4,4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:([0-9]{1,2})', self.__content, re.MULTILINE|re.DOTALL);
+        if m is None:
+            m = re.search(r'>[0-9]{4,4}-[0-9]{1,2}-[0-9]{1,2} [0-9]{1,2}:[0-9]{1,2}:([0-9]{1,2})', self.__content, re.MULTILINE|re.DOTALL);
+            if m is None:
+                return 0
+        return int(m.groups()[0])
+
+    @property
+    def categories(self):
+        categories = []
+        return cagetories
+    
+    @property
+    def content(self):
+        m = re.search('<td class="in" style=.*?>(.*?)</td>', self.__content);
+        if m is None:
+            m = re.search('<ul><div style=.*>(.*?)</div>', self.__content);
+            if m is None:
+                return None
+        return m.groups()[0]
+
+    @property
+    def pic_links(self):
+        links = []
+
+        m = re.findall(r'<img src=.*?LoveSchool_xfile.*?GRAPH/(.*?\.jpg)', self.__content, re.MULTILINE|re.DOTALL);
+        if m is None:
+            return None
+
+        for l in m:
+            links.append(PIC_FILE_PATH + "/" + l)
+        return links 
+
+    @property
+    def pic_src_links(self):
+        links = []
+
+        m = re.findall(r'<img src=.*?(LoveSchool_xfile.*?\.jpg)', self.__content, re.MULTILINE|re.DOTALL);
+        if m is None:
+            return None
+
+        for l in m:
+            links.append("http://love.youthwant.com.tw/" + l)
+        return links 
+
+    @property
+    def name(self):
+        m = re.search('<td class="in">.*?<a href.*?>(.*?)</a>', self.__content);
+        if m is None:
+            m = re.search('<a href.*?>(.*?)</a> \xe8\xaa\xaa', self.__content);
+            if m is None:
+                return None
+
+        return str(m.groups()[0])
+
 class ArticleType1Factory:
     def __init__ (self, content):
         self.__content = content
@@ -241,6 +361,60 @@ class ArticleParse:
         if self.__parseFactory.content is None:
             self.__parseFactory = ArticleType2Factory(content)
 
+        self.__comments = []
+
+    def get_comments(self):
+        nextComment = self.__content
+        hasChild = None
+        id = 1
+
+        firstEntry = self.__content.find("\xe5\x9b\x9e \xe6\x87\x89")
+        nextComment = nextComment[firstEntry:self.__content.rfind("\xe9\x87\x9d\xe5\xb0\x8d\xe6\x9c\xac\xe7\xaf\x87\xe6\x97\xa5\xe8\xa8\x98\xe7\x99\xbc\xe8\xa1\xa8\xe5\x9b\x9e\xe6\x87\x89")]
+        while nextComment is not None:
+            headTag = "<table "
+            tailTag = "</table>"
+
+            head = nextComment.find(headTag)
+            tail = nextComment.find(tailTag)
+
+            if head is None or tail is None or head > tail:
+                break
+
+            partContent = nextComment[head:tail]
+            childPos = partContent.find("\xe6\x96\xbc") + 32
+            #childPos = partContent.find("<div") 
+
+            parentContent = ""
+            if childPos is not None:
+                hasChild = True
+                parentContent = partContent[:childPos]
+            else:
+                parentContent = partContent
+
+
+            nextComment = nextComment[tail + len(tailTag):]
+
+            comment = None
+            comment = ArticleCommentFactory(parentContent)
+            aComment = {}
+            aComment["comment"] = comment
+            aComment["id"] = id
+            aComment["parent"] = 0
+            self.__comments.append(aComment)
+
+            partContent = partContent[childPos:]
+
+            if hasChild is not None:
+                aComment = {}
+                comment = ArticleCommentFactory(partContent)
+                aComment["comment"] = comment
+                aComment["parent"] = id
+                id += 1
+                aComment["id"] = id
+                self.__comments.append(aComment)
+            id += 1
+        return self.__comments
+
     @property
     def type(self):
         return self.__parseFactory.type
@@ -431,6 +605,36 @@ class ArticleMgr:
             aIsSticky.text = '0'
             aCategory = ET.SubElement(aItem, 'category')
             aCategory.text = '<![CDATA[Uncategorized]]>'
+
+            for c in a.get_comments():
+                dt = DT.datetime(c["comment"].year, c["comment"].month, c["comment"].day, c["comment"].hour, c["comment"].minute, c["comment"].seconds, tzinfo=None)
+                utcTime = dt - DT.timedelta(hours=8)
+
+                aComment = ET.SubElement(aItem, 'wp:comment')
+                aCommentId = ET.SubElement(aComment, 'wp:comment_id')
+                aCommentId.text = str(c["id"])
+                aCommentAuthor = ET.SubElement(aComment, 'wp:comment_author')
+                aCommentAuthor.text = self.__CDATA__(c["comment"].name)
+                aCommentAuthor_email = ET.SubElement(aComment, 'wp:comment_author_email')
+                aCommentAuthor_email.text = 'foobar@foo.bar'
+                aCommentAuthor_url = ET.SubElement(aComment, 'wp:comment_author_url')
+                aCommentAuthor_url.text = ''
+                aCommentAuthor_IP = ET.SubElement(aComment, 'wp:comment_author_IP')
+                aCommentAuthor_IP.text = ''
+                aCommentDate = ET.SubElement(aComment, 'wp:comment_date')
+                aCommentDate.text = dt.isoformat()
+                aCommentDate_gmt = ET.SubElement(aComment, 'wp:comment_date_gmt')
+                aCommentDate_gmt.text = utcTime.isoformat()
+                aCommentContent = ET.SubElement(aComment, 'wp:comment_content')
+                aCommentContent.text = self.__CDATA__(c["comment"].content)
+                aCommentApproved = ET.SubElement(aComment, 'wp:comment_approved')
+                aCommentApproved.text = '1'
+                aCommentType = ET.SubElement(aComment, 'wp:comment_type')
+                aCommentType.text = ''
+                aCommentParent = ET.SubElement(aComment, 'wp:parent')
+                aCommentParent.text = str(c["parent"])
+                aCommentUser_id = ET.SubElement(aComment, 'wp:user_id')
+                aCommentUser_id.text = '1'
 
             aPostStatus = ET.SubElement(aItem, 'wp:status')
             aPostStatus.text = 'publish'
